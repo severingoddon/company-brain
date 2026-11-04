@@ -1,0 +1,29 @@
+# Data sources for RAG_BRAIN.
+#
+# Every [sources.<name>] block is an independent index (its own Chroma collection)
+# and is served by its own MCP server:  python -m rag_brain.server --source <name>
+#
+# Quickest way to add one (writes the block, indexes, registers it in OpenClaw):
+#   scripts/new_source.sh <name> <folder> "<what is in there>"
+#
+# Relative paths are resolved against the project root.
+# Keys: path, description, include, exclude, collection, chroma_path, embed_model,
+#       chunk_size, chunk_overlap, skip_hidden, link_port, describe_images,
+#       vision_base_url, vision_model
+
+[defaults]
+chroma_path = "data/chroma"
+embed_model = "BAAI/bge-m3"   # multilingual, good for German
+chunk_size = 1500             # characters
+chunk_overlap = 200
+skip_hidden = true            # ignore files/folders starting with "."
+link_port = 8766              # local server that shows source files in the browser
+
+# Example for a mixed-file index (PDF, Office, HTML, CSV, ...):
+#
+# [sources.company]
+# description = "Company documentation, meeting notes, FAQs and policies."
+# path = "data/company"          # or an absolute path, e.g. "~/Downloads/hackathon-data"
+# include = ["**/*"]            # every file a loader understands
+# exclude = ["archive/**"]
+# describe_images = true        # caption images with the vision model (needs the LLM endpoint)

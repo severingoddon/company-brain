@@ -1,0 +1,46 @@
+// RAG_BRAIN settings for ~/.openclaw/openclaw.json
+// Apply with:  openclaw config patch --file openclaw/openclaw.patch.json5
+// (objects merge, arrays replace). Paths are absolute on purpose: OpenClaw spawns the MCP server itself.
+{
+  models: {
+    providers: {
+      vllm: {
+        baseUrl: "http://192.168.1.28:8000/v1",
+        api: "openai-completions",
+        timeoutSeconds: 600,
+        models: [
+          {
+            id: "nvidia/Qwen3.8-Flash-Next-FP4-Local",
+            name: "Qwen3.8 Flash Next (Spark)",
+            reasoning: true,
+            input: ["text", "image"],
+            cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+            contextWindow: 262144, // = vLLM --max-model-len
+            maxTokens: 32768,
+            compat: { thinkingFormat: "qwen-chat-template" },
+          },
+        ],
+      },
+    },
+  },
+
+  agents: {
+    defaults: {
+      model: { primary: "vllm/nvidia/Qwen3.8-Flash-Next-FP4-Local" },
+    },
+  },
+
+  // MCP servers (one per data source) are not set here: scripts/new_source.sh registers them
+  // via `openclaw config patch`, and scripts/use_source.sh switches the active one.
+  // Tools appear as <source>__search_docs, <source>__read_document, ...
+
+  // Local-only hardening: no shell, file access limited to the workspace.
+  gateway: { mode: "local", bind: "loopback", port: 18789 },
+  tools: {
+    profile: "coding",
+    deny: ["group:runtime"],
+    exec: { security: "deny" },
+    fs: { workspaceOnly: true },
+    elevated: { enabled: false },
+  },
+}

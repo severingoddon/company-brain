@@ -1,0 +1,14 @@
+.venv/
+.idea/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Private data and derived index
+data/
+
+# OpenClaw creates its own git repo in the workspace; memory files are private
+openclaw/workspace/.git/
+openclaw/workspace/memory/
+openclaw/workspace/MEMORY.md
+/data/
