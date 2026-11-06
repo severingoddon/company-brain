@@ -1,4 +1,5 @@
 .venv/
+.venv-cognee/
 .idea/
 __pycache__/
 *.pyc
